@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Banquet Lys Cyclo">
+<meta name="theme-color" content="#08101f">
+<title>Banquet Lys Cyclo — Réservation &amp; plan de table</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--j:#CCFF00;--jg:rgba(204,255,0,.13);--b:#08101f;--bm:#0d1c35;--bc:#101e3c;--bb:#1b2f5a;--bh:#152340;--t:#ddeeff;--td:#7e9cc9;--R:#FF5555;--V:#00E676;--O:#FFA726;--P:#cc66ff;--ra:14px;--rs:9px;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{min-height:100%;font-family:'Barlow',sans-serif;background:var(--b);color:var(--t);overflow-x:hidden;}
+input,textarea,select,button{font-family:'Barlow',sans-serif;font-size:15px;}
+button{cursor:pointer;}
+#splash{position:fixed;inset:0;background:var(--b);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;transition:opacity .5s;}
+#splash.hide{opacity:0;pointer-events:none;}
+.sb{font-family:'Bebas Neue',sans-serif;font-size:50px;color:var(--j);letter-spacing:4px;}
+.sy{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:6px;margin-top:-6px;}
+.ss{font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:3px;color:var(--td);text-transform:uppercase;margin-top:14px;}
+#screenLogin,#screenApp{display:none;min-height:100vh;}
+#screenLogin.show{display:flex;flex-direction:column;align-items:center;padding:24px 16px;}
+#screenApp.show{display:block;padding-bottom:40px;}
+.llogo{text-align:center;margin:10px 0 4px;}
+.lb{font-family:'Bebas Neue',sans-serif;font-size:40px;color:var(--j);letter-spacing:3px;line-height:1;}
+.ly{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:5px;}
+.lsub{font-family:'Barlow Condensed',sans-serif;font-size:14px;color:var(--td);text-align:center;margin:8px 0 18px;max-width:360px;line-height:1.5;}
+.lbox,.card{background:var(--bm);border:1px solid var(--bb);border-radius:var(--ra);padding:14px;width:100%;}
+.lbox{max-width:400px;padding:18px 16px;}
+.lq{font-family:'Bebas Neue',sans-serif;font-size:19px;text-align:center;margin-bottom:14px;letter-spacing:1px;}
+.fg{margin-bottom:11px;}
+.fl{display:block;font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--td);margin-bottom:4px;}
+.fi{width:100%;background:var(--bc);border:1px solid var(--bb);color:var(--t);border-radius:var(--rs);padding:10px 11px;outline:none;}
+.fi:focus{border-color:var(--j);}
+select.fi{appearance:auto;}
+.lhint{font-size:11px;color:var(--td);margin-top:3px;}
+.bp{background:var(--j);color:#08101f;border:0;border-radius:var(--rs);padding:11px 16px;font-weight:700;letter-spacing:.3px;}
+.bp:disabled{opacity:.4;}
+.bs{background:transparent;color:var(--t);border:1px solid var(--bb);border-radius:var(--rs);padding:9px 13px;font-weight:600;}
+.bs.on{border-color:var(--j);color:var(--j);background:var(--jg);}
+.bd{background:transparent;color:var(--R);border:1px solid rgba(255,85,85,.4);border-radius:var(--rs);padding:8px 11px;font-weight:600;}
+header{background:var(--bm);border-bottom:3px solid var(--j);padding:0 12px;padding-top:env(safe-area-inset-top,0);position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;height:calc(54px + env(safe-area-inset-top,0));}
+.hlogo{font-family:'Bebas Neue',sans-serif;font-size:21px;color:var(--j);letter-spacing:2px;display:flex;align-items:baseline;gap:6px;}
+.hlogo span{font-size:11px;color:var(--td);letter-spacing:1px;}
+.hdr-r{display:flex;align-items:center;gap:8px;}
+.rchip{padding:2px 8px;border-radius:20px;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;background:rgba(255,215,0,.18);color:#FFD700;}
+.hav{width:34px;height:34px;border-radius:50%;background:var(--j);color:#08101f;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;}
+nav{display:flex;background:var(--bm);border-bottom:1px solid var(--bb);position:sticky;top:calc(54px + env(safe-area-inset-top,0));z-index:99;}
+.nb{flex:1;background:none;border:0;color:var(--td);padding:8px 2px 7px;font-size:19px;display:flex;flex-direction:column;align-items:center;gap:1px;border-bottom:3px solid transparent;}
+.nb span{font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:.5px;text-transform:uppercase;font-weight:700;}
+.nb.active{color:var(--j);border-bottom-color:var(--j);}
+.view{display:none;padding:14px 12px;max-width:640px;margin:0 auto;}
+.view.active{display:block;}
+.hero{background:linear-gradient(135deg,var(--bh),var(--bm));border:1px solid var(--bb);border-radius:var(--ra);padding:16px;margin-bottom:12px;}
+.hero h1{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--j);letter-spacing:1.5px;line-height:1.05;}
+.pills{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px;}
+.pill{background:var(--jg);border:1px solid rgba(204,255,0,.3);border-radius:99px;padding:5px 11px;font-size:13px;font-weight:600;color:var(--j);}
+.banner{border-radius:var(--rs);padding:10px 12px;font-size:14px;margin-bottom:12px;}
+.banner.warn{background:rgba(255,167,38,.14);border:1px solid rgba(255,167,38,.5);color:#ffcf8a;}
+.banner.ok{background:rgba(0,230,118,.12);border:1px solid rgba(0,230,118,.4);color:#8bf5b9;}
+.h2{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1.2px;margin:16px 0 8px;display:flex;justify-content:space-between;align-items:center;}
+.conv{display:flex;flex-direction:column;gap:9px;margin-bottom:9px;}
+.crow{display:flex;justify-content:space-between;align-items:center;gap:8px;}
+.cname{font-weight:700;font-size:16px;}
+.chip{display:inline-block;padding:2px 8px;border-radius:99px;font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;background:var(--bb);color:var(--t);}
+.chip.g{background:rgba(0,230,118,.18);color:var(--V);}
+.chip.o{background:rgba(255,167,38,.2);color:var(--O);}
+.chip.r{background:rgba(255,85,85,.2);color:var(--R);}
+.chip.j{background:var(--jg);color:var(--j);}
+.seg{display:flex;gap:6px;flex-wrap:wrap;}
+.seg button{flex:1;min-width:100px;}
+.muted{color:var(--td);font-size:13px;}
+.sum{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px;margin-bottom:10px;}
+.stat{background:var(--bc);border:1px solid var(--bb);border-radius:var(--rs);padding:9px 6px;text-align:center;}
+.stat b{display:block;font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--j);line-height:1.1;}
+.stat span{font-size:11px;color:var(--td);font-weight:600;}
+.tcard{margin-bottom:9px;}
+.tcard.low{border-left:4px solid var(--O);} .tcard.okk{border-left:4px solid var(--V);} .tcard.full{border-left:4px solid var(--j);} .tcard.over{border-left:4px solid var(--R);}
+.occ{margin-top:7px;display:flex;flex-direction:column;gap:3px;font-size:14px;}
+.occ div{display:flex;justify-content:space-between;gap:6px;}
+.occ .me{color:var(--j);font-weight:700;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(74px,1fr));gap:7px;}
+.tbtn{background:var(--bc);border:1px solid var(--bb);color:var(--t);border-radius:var(--rs);padding:8px 2px;text-align:center;line-height:1.15;}
+.tbtn b{font-family:'Bebas Neue',sans-serif;font-size:22px;display:block;}
+.tbtn small{font-size:11px;color:var(--td);}
+.tbtn.cur{border-color:var(--j);background:var(--jg);}
+.tbtn.empty{opacity:.75;}
+.tbtn:disabled{opacity:.28;cursor:not-allowed;}
+.ov{position:fixed;inset:0;background:rgba(3,8,18,.78);z-index:500;display:none;align-items:flex-end;justify-content:center;}
+.ov.show{display:flex;}
+.sheet{background:var(--bm);border:1px solid var(--bb);border-radius:18px 18px 0 0;width:100%;max-width:560px;max-height:88vh;overflow-y:auto;padding:16px 14px calc(18px + env(safe-area-inset-bottom,0));}
+.sheet h3{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1.2px;margin-bottom:10px;color:var(--j);}
+.tabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;}
+.tabs button{flex:1;}
+.pick{width:100%;text-align:left;background:var(--bc);border:1px solid var(--bb);color:var(--t);border-radius:var(--rs);padding:9px 11px;margin-bottom:6px;display:flex;justify-content:space-between;gap:8px;align-items:center;}
+.pick:disabled{opacity:.35;}
+table.t{width:100%;border-collapse:collapse;font-size:13px;}
+table.t th,table.t td{padding:6px 5px;border-bottom:1px solid var(--bb);text-align:left;}
+table.t th{color:var(--td);font-size:11px;text-transform:uppercase;letter-spacing:.6px;}
+table.t td.n,table.t th.n{text-align:right;}
+.adm-row{display:grid;grid-template-columns:1fr auto;gap:6px 8px;align-items:center;padding:9px 0;border-bottom:1px solid var(--bb);}
+.adm-row .ctl{grid-column:1/-1;display:flex;gap:6px;flex-wrap:wrap;}
+.adm-row .ctl select,.adm-row .ctl input{width:auto;flex:1;min-width:84px;padding:6px 7px;font-size:13px;}
+#toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,30px);background:var(--j);color:#08101f;font-weight:700;padding:10px 16px;border-radius:99px;opacity:0;pointer-events:none;transition:all .25s;z-index:900;max-width:92vw;text-align:center;}
+#toast.show{opacity:1;transform:translate(-50%,0);}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.fbadge{display:flex;justify-content:space-between;align-items:center;gap:8px;}
+#ovPrint{position:fixed;inset:0;z-index:700;background:#dfe5ee;overflow:auto;display:none;color:#000;}
+#ovPrint.show{display:block;}
+.ptool{position:sticky;top:0;z-index:5;background:var(--bm);color:var(--t);padding:10px 12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;border-bottom:3px solid var(--j);}
+.ptool select,.ptool label.bs{font-size:14px;}
+.ptool select{background:var(--bc);color:var(--t);border:1px solid var(--bb);border-radius:var(--rs);padding:8px;}
+.ptool .pinfo{flex-basis:100%;font-size:12px;color:var(--td);}
+.page{background:#fff;width:210mm;height:297mm;margin:12px auto;padding:8mm;box-shadow:0 2px 12px rgba(0,0,0,.25);break-after:page;page-break-after:always;overflow:hidden;position:relative;font-family:'Barlow',Arial,sans-serif;color:#222;}
+@media (max-width:820px){#printArea{zoom:.4;}}
+/* chevalets (marque-places) : 2 × 4 par page A4, pliés en tente */
+.cgrid{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(4,1fr);gap:0;height:100%;}
+.chev{border:.3mm solid #333;display:flex;flex-direction:column;background:#f3f3f3;overflow:hidden;}
+.chev-top{flex:1;display:flex;align-items:center;justify-content:center;border-bottom:.3mm dashed #999;background:#fff;}
+.rot{transform:rotate(180deg);text-align:center;display:flex;flex-direction:column;align-items:center;gap:1mm;padding:2mm;}
+.rot img{max-height:20mm;max-width:60mm;}
+.rot .ct{font-family:'Bebas Neue',sans-serif;font-size:15pt;letter-spacing:1px;line-height:1;}
+.rot .cd{font-size:9pt;}
+.rot .ctb{font-family:'Bebas Neue',Arial,sans-serif;font-size:16pt;letter-spacing:2px;color:#CC6600;line-height:1;margin-top:1mm;}
+.chev-bot{flex:1;display:flex;flex-direction:column;}
+.chev-bot .tb{text-align:center;font-size:8pt;letter-spacing:1px;padding-top:1.5mm;}
+.chev-bot .cnm{flex:1;display:flex;align-items:center;justify-content:space-between;padding:0 6mm;gap:4mm;color:#CC6600;}
+.pn{font-weight:500;line-height:1;} .pn.s1{font-size:25pt;} .pn.s2{font-size:20pt;} .pn.s3{font-size:15pt;}
+.nn{font-size:10pt;text-align:right;}
+.band{height:12mm;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12pt;letter-spacing:1px;}
+/* plan par table */
+.rh{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:1mm solid #CCFF00;padding-bottom:3mm;margin-bottom:5mm;}
+.rh h1{font-family:'Bebas Neue',sans-serif;font-size:44pt;line-height:1;color:#0d1c35;letter-spacing:2px;}
+.rh .rs{font-size:10pt;color:#555;}
+.rcount{display:flex;gap:2mm;flex-wrap:wrap;justify-content:flex-end;}
+.rcount span{padding:1.5mm 3mm;border-radius:2mm;font-weight:700;font-size:10pt;}
+.seat{display:flex;align-items:center;gap:4mm;border:.3mm solid #bbb;border-radius:2mm;margin-bottom:2.5mm;overflow:hidden;height:17mm;}
+.seat .sn{width:12mm;align-self:stretch;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:20pt;background:#0d1c35;color:#CCFF00;}
+.seat .sname{flex:1;font-size:17pt;color:#CC6600;}
+.seat .sname b{color:#444;font-size:12pt;font-weight:500;margin-left:2mm;}
+.seat .snote{font-size:8pt;color:#a33;display:block;}
+.seat .sband{width:46mm;align-self:stretch;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12pt;letter-spacing:1px;}
+.legend{position:absolute;left:8mm;right:8mm;bottom:6mm;display:flex;gap:5mm;font-size:9pt;color:#555;align-items:center;}
+.legend i{display:inline-block;width:4mm;height:4mm;border-radius:1mm;vertical-align:middle;margin-right:1.5mm;}
+@media print{
+  html,body{background:#fff!important;}
+  body>*:not(#ovPrint){display:none!important;}
+  #ovPrint{position:static!important;display:block!important;background:#fff;overflow:visible;}
+  .ptool{display:none!important;}
+  #printArea{zoom:1!important;}
+  .page{margin:0;box-shadow:none;}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  @page{size:A4 portrait;margin:0;}
+}
+@media print{header,nav,.noprint{display:none!important;}}
+</style>
+</head>
+<body>
+
+<div id="splash"><div class="sb">BANQUET</div><div class="sy">LYS CYCLO</div><div class="ss">Chargement…</div></div>
+
+<div id="screenLogin">
+  <div class="llogo"><div class="lb">BANQUET</div><div class="ly">LYS CYCLO</div></div>
+  <div class="lsub">Réserve ta place au banquet annuel du club, choisis ton plat et ta table. Pas de mot de passe : remplis simplement les 3 champs ci-dessous.</div>
+  <div class="lbox">
+    <div class="lq">👋 Pour commencer</div>
+    <div class="fg"><label class="fl">Ton prénom</label><input class="fi" id="rPrenom" placeholder="Ex : Jean" maxlength="30" autocomplete="given-name"></div>
+    <div class="fg"><label class="fl">Ton nom</label><input class="fi" id="rNom" placeholder="Ex : Dupont" maxlength="30" autocomplete="family-name"></div>
+    <div class="fg"><label class="fl">Ton numéro de mobile</label><input class="fi" id="rTel" placeholder="06 12 34 56 78" inputmode="tel" maxlength="20" autocomplete="tel"><div class="lhint">Sert uniquement à te reconnaître si tu changes de téléphone.</div></div>
+    <button class="bp" style="width:100%;margin-top:6px" onclick="doConnect()">✅ C'est parti !</button>
+  </div>
+</div>
+
+<div id="screenApp">
+<header>
+  <div class="hlogo">BANQUET<span>LYS CYCLO</span></div>
+  <div class="hdr-r"><div class="rchip" id="roleChip" style="display:none"></div><div class="hav" id="hdrAv" onclick="openWho()"></div></div>
+</header>
+<nav>
+  <button class="nb active" id="nb-mine" onclick="sv('mine')">🍽️<span>Ma réservation</span></button>
+  <button class="nb" id="nb-plan" onclick="sv('plan')">🪑<span>Plan de salle</span></button>
+  <button class="nb" id="nb-admin" onclick="sv('admin')" style="display:none">⚙️<span>Organisation</span></button>
+</nav>
+<div id="view-mine" class="view active"></div>
+<div id="view-plan" class="view"></div>
+<div id="view-admin" class="view"></div>
+</div>
+
+<div class="ov" id="ovMain"><div class="sheet" id="ovMainBody"></div></div>
+<div id="ovPrint"></div>
+<div id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, set, get, update, remove, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+// ═══ MÊME PROJET FIREBASE QUE LES AUTRES APPLIS DU CLUB — données du banquet sous "banquet2026/" ═══
+const FB = {
+  apiKey: "AIzaSyAesDUe-NVkmWNqnFUouJNAzP1q4Y6WU5s",
+  authDomain: "agenda-lys-cylo.firebaseapp.com",
+  databaseURL: "https://agenda-lys-cylo-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "agenda-lys-cylo",
+  storageBucket: "agenda-lys-cylo.firebasestorage.app",
+  messagingSenderId: "660373080006",
+  appId: "1:660373080006:web:acb61ee1523acaa38ad4c7"
+};
+const app = initializeApp(FB);
+const db = getDatabase(app);
+const ROOT = "banquet2026";
+
+// ═══ ÉTAT ═══
+const DEF = {
+  titre:"Banquet annuel Lys Cyclo", date:"à définir", heure:"", lieu:"à définir",
+  tarifAdulte:45, tarifEnfant:18, coutAdulte:42, coutEnfant:20, adherentGratuit:true,
+  platA:"Viande", platB:"Poisson", platEnfant:"Menu enfant",
+  tableMin:8, tableMax:12, nbTables:24, ouvert:true, dateLimite:"",
+  extraA:0, extraB:0, extraE:0
+};
+let CFG = {...DEF};
+let CV = {};   // convives
+let RS = {};   // réservations (par réservant)
+let ADH = {};  // annuaire adhérents importé (cotisation à jour ou non)
+let DRAFT = null; // brouillon du formulaire de saisie
+let MB = [];   // annuaire officiel des membres
+let CU = null; // utilisateur connecté
+let view = "mine", adminTab = "synth", planFilter = "";
+let ready = false;
+
+// ═══ UTILITAIRES ═══
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const num = (v, d=0) => { const n = Number(v); return isFinite(n) ? n : d; };
+const eur = n => (Math.round(n*100)/100).toLocaleString("fr-FR",{minimumFractionDigits:0,maximumFractionDigits:2}) + " €";
+const cap = s => (s||"").toLowerCase().replace(/(^|[\s'-])([a-zà-ÿ])/g, (m,a,b)=>a+b.toUpperCase());
+const initials = (p,n) => ((p||"?")[0] + (n||"?")[0]).toUpperCase();
+function normPhone(raw){
+  let s = (raw||"").trim().replace(/[^\d+]/g,"");
+  if (s.startsWith("+33")) s = "0" + s.slice(3);
+  else if (s.startsWith("0033")) s = "0" + s.slice(4);
+  return s;
+}
+const isValidFrMobile = s => /^0[67]\d{8}$/.test(s);
+const isAdmin = () => !!CU && (CU.role==="admin" || CU.role==="superviseur");
+const todayISO = () => new Date().toLocaleDateString("sv-SE");
+const frDate = iso => /^\d{4}-\d{2}-\d{2}$/.test(iso||"") ? iso.split("-").reverse().join("/") : (iso||"");
+const deadlinePassed = () => /^\d{4}-\d{2}-\d{2}$/.test(CFG.dateLimite||"") && todayISO() > CFG.dateLimite;
+const isOpen = () => CFG.ouvert !== false && !deadlinePassed();
+const canEdit = () => isOpen() || isAdmin();
+const uid = () => "c" + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+const platName = c => c==="A" ? CFG.platA : c==="B" ? CFG.platB : CFG.platEnfant;
+const platIcon = c => c==="A" ? "🥩" : c==="B" ? "🐟" : "🧒";
+const typeName = t => t==="enfant" ? "Enfant" : "Adulte";
+const convArr = () => Object.entries(CV).map(([id,c]) => ({id, ...c}));
+const mine = () => convArr().filter(c => c.owner === CU.id).sort((a,b)=>(a.ts||0)-(b.ts||0));
+const fullName = c => cap(c.prenom) + " " + (c.nom||"").toUpperCase();
+const normStr = s => String(s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toUpperCase().replace(/[^A-Z0-9]/g,"");
+const adhKey = (p,n) => normStr(n) + "_" + normStr(p);
+// ── Fonction de vérification : la personne est-elle adhérente ? à jour de cotisation ? ──
+function lookupAdh(prenom, nom, tel){
+  let a = ADH[adhKey(prenom, nom)];
+  if (!a && tel){ const t = normPhone(tel); a = Object.values(ADH).find(x => x.tel && normPhone(x.tel)===t && normStr(x.nom)===normStr(nom)); }
+  return a || null;
+}
+const kidInfo = () => ({price:num(CFG.tarifEnfant), club:false, cls:"j", label:"Enfant 5-12 ans — " + eur(CFG.tarifEnfant)});
+function adultInfo(prenom, nom, tel){
+  const p = num(CFG.tarifAdulte), a = lookupAdh(prenom, nom, tel);
+  if (a && a.cotisation && CFG.adherentGratuit !== false) return {price:0, club:true, cls:"g", label:"✅ Adhérent à jour — pris en charge par le club"};
+  if (a && a.cotisation) return {price:p, club:false, cls:"o", label:"Adhérent à jour — " + eur(p) + " à régler"};
+  if (a) return {price:p, club:false, cls:"o", label:"Cotisation non à jour — " + eur(p) + " à régler"};
+  return {price:p, club:false, cls:"o", label:(Object.keys(ADH).length ? "Non adhérent — " : "") + eur(p) + " à régler"};
+}
+const convInfo = c => c.type==="enfant" ? kidInfo() : adultInfo(c.prenom, c.nom, c.id==="self_"+c.owner ? (RS[c.owner]||{}).tel : "");
+const typeLabel = c => c.type==="enfant" ? "Enfant" : (convInfo(c).club ? "Adhérent" : "Adulte");
+
+let toastTimer;
+function showT(msg){ const el=$("toast"); el.textContent=msg; el.classList.add("show"); clearTimeout(toastTimer); toastTimer=setTimeout(()=>el.classList.remove("show"),2800); }
+function openSheet(html){ $("ovMainBody").innerHTML = html; $("ovMain").classList.add("show"); }
+window.closeSheet = () => { window._lock = false; $("ovMain").classList.remove("show"); render(); };
+$("ovMain").addEventListener("click", e => { if (e.target.id==="ovMain" && !window._lock) closeSheet(); });
+function askConfirm(title, msg, onOk){
+  window._ok = () => { closeSheet(); onOk(); };
+  openSheet(`<h3>${esc(title)}</h3><p style="margin-bottom:14px;line-height:1.45">${esc(msg)}</p><div class="row2"><button class="bs" onclick="closeSheet()">Annuler</button><button class="bp" onclick="_ok()">Confirmer</button></div>`);
+}
+
+// ═══ LOGIQUE MÉTIER ═══
+function byTable(){
+  const m = {};
+  convArr().forEach(c => { if (c.table) (m[c.table] = m[c.table] || []).push(c); });
+  return m;
+}
+const tableCount = (n, exclude=[]) => (byTable()[n]||[]).filter(c => !exclude.includes(c.id)).length;
+function tableState(n){
+  const k = tableCount(n);
+  if (k > CFG.tableMax) return {k, cls:"over", chip:"r", label:"Surchargée"};
+  if (k === CFG.tableMax) return {k, cls:"full", chip:"j", label:"Complète"};
+  if (k < CFG.tableMin) return {k, cls:"low", chip:"o", label:"À compléter (min " + CFG.tableMin + ")"};
+  return {k, cls:"okk", chip:"g", label:"OK"};
+}
+function ownerOf(id){ return RS[id] || {}; }
+function ownerLabel(id){
+  if (id === "admin") return "Ajouts organisateurs";
+  const r = ownerOf(id);
+  if (r.prenom || r.nom) return cap(r.prenom) + " " + (r.nom||"").toUpperCase();
+  const s = CV["self_"+id]; return s ? fullName(s) : id;
+}
+const priceOf = c => convInfo(c).price;
+const dueOf = owner => convArr().filter(c => c.owner===owner).reduce((s,c)=>s+priceOf(c),0);
+function payList(o){
+  const r = RS[o] || {}, out = [];
+  Object.entries(r.paiements||{}).forEach(([id,p]) => out.push({id, ...p}));
+  if (r.paye && r.paye.montant) out.push({id:"_legacy", ...r.paye});
+  return out.sort((a,b)=>(a.date||"").localeCompare(b.date||""));
+}
+const paidOf = o => payList(o).reduce((s,p)=>s+num(p.montant),0);
+function costOf(list){
+  return list.reduce((s,c)=> s + (c.type==="enfant" ? num(CFG.coutEnfant) : num(CFG.coutAdulte)), 0);
+}
+function stats(){
+  const l = convArr();
+  const s = {total:l.length, adherent:0, adulte:0, enfant:0, A:0, B:0, E:0, sansTable:0, sansPlat:0};
+  l.forEach(c => {
+    s[c.type==="enfant"?"enfant":(priceOf(c)===0?"adherent":"adulte")]++;
+    if (c.plat==="A"||c.plat==="B"||c.plat==="E") s[c.plat]++; else s.sansPlat++;
+    if (!c.table) s.sansTable++;
+  });
+  return s;
+}
+
+// ═══ IDENTIFICATION ═══
+function findOfficial(pU, nU, tel){
+  if (tel){ const t = MB.find(m => m.tel && normPhone(m.tel)===tel); if (t) return t; }
+  return MB.find(m => (m.prenom||"").toUpperCase()===pU && (m.nom||"").toUpperCase()===nU) || null;
+}
+window.doConnect = async () => {
+  const prenom = $("rPrenom").value.trim(), nom = $("rNom").value.trim();
+  const tel = normPhone($("rTel").value);
+  if (!prenom || !nom){ showT("Merci de renseigner ton prénom et ton nom."); return; }
+  if (!isValidFrMobile(tel)){ showT("Numéro de mobile invalide (ex : 06 12 34 56 78)."); return; }
+  if (!MB.length){ try { const s = await get(ref(db,"membres")); MB = Object.entries(s.val()||{}).map(([id,d])=>({id,...d})); } catch(e){} }
+  const PU = prenom.toUpperCase(), NU = nom.toUpperCase();
+  const m = findOfficial(PU, NU, tel);
+  CU = {id: m ? m.id : "tel_"+tel, prenom: PU, nom: NU, tel, role: m ? (m.role||"membre") : "membre", member: !!m};
+  localStorage.setItem("banquet2026_user_v1", JSON.stringify(CU));
+  enterApp();
+};
+window.doLogout = () => {
+  closeSheet(); CU = null; localStorage.removeItem("banquet2026_user_v1");
+  $("screenApp").classList.remove("show"); $("screenLogin").classList.add("show");
+  ["rPrenom","rNom","rTel"].forEach(i => $(i).value = "");
+};
+window.openWho = () => openSheet(`<h3>Connecté</h3><p style="margin-bottom:6px"><b>${esc(cap(CU.prenom))} ${esc(CU.nom)}</b></p><p class="muted" style="margin-bottom:14px">${adultInfo(CU.prenom, CU.nom, CU.tel).club ? "Adhérent à jour de cotisation" : "Pas adhérent à jour"}${isAdmin()?" · Organisateur":""}</p><div class="row2"><button class="bs" onclick="closeSheet()">Fermer</button><button class="bd" onclick="doLogout()">Changer de profil</button></div>`);
+function enterApp(){
+  $("screenLogin").classList.remove("show"); $("screenApp").classList.add("show");
+  $("hdrAv").textContent = initials(CU.prenom, CU.nom);
+  const chip = $("roleChip"); chip.style.display = isAdmin() ? "" : "none"; chip.textContent = "👑 Orga";
+  $("nb-admin").style.display = isAdmin() ? "flex" : "none";
+  sv(view === "admin" && !isAdmin() ? "mine" : view);
+}
+window.sv = v => {
+  view = v;
+  ["mine","plan","admin"].forEach(k => { $("view-"+k).classList.toggle("active", k===v); $("nb-"+k).classList.toggle("active", k===v); });
+  render();
+};
+
+// ═══ ÉCRITURES ═══
+async function ensureReservation(){
+  const r = RS[CU.id];
+  if (!r || r.tel !== CU.tel) await update(ref(db, `${ROOT}/reservations/${CU.id}`), {prenom: CU.prenom, nom: CU.nom, tel: CU.tel, ts: (r&&r.ts)||Date.now()});
+}
+// ═══ FORMULAIRE DE SAISIE (plusieurs personnes) ═══
+const newLine = (o={}) => ({id:"", prenom:"", nom:"", cat:"adulte", plat:"", note:"", me:false, ...o});
+const lineInfoOf = L => L.cat==="enfant" ? kidInfo() : adultInfo(L.prenom, L.nom, L.me ? CU.tel : "");
+function dupMsg(L, i){
+  if (!L.prenom.trim() || !L.nom.trim()) return "";
+  const k = adhKey(L.prenom, L.nom);
+  const other = convArr().find(c => c.owner !== CU.id && adhKey(c.prenom, c.nom) === k);
+  if (other) return "⚠️ Déjà inscrit(e) via " + ownerLabel(other.owner);
+  if (DRAFT.lines.some((x,j) => j!==i && adhKey(x.prenom, x.nom) === k)) return "⚠️ Doublon dans la saisie";
+  return "";
+}
+window.openForm = (addBlank) => {
+  if (!canEdit()){ showT("Les inscriptions sont closes."); return; }
+  const meId = "self_" + CU.id;
+  const lines = mine().map(c => newLine({id:c.id, prenom:cap(c.prenom), nom:c.nom, cat:c.type==="enfant"?"enfant":"adulte", plat:c.plat==="E"?"":(c.plat||""), note:c.note||"", me:c.id===meId}));
+  if (!CV[meId]) lines.unshift(newLine({id:meId, prenom:cap(CU.prenom), nom:CU.nom, me:true}));
+  if (addBlank) lines.push(newLine({nom:CU.nom}));
+  DRAFT = {step:"edit", del:[], lines};
+  window._lock = true;
+  renderForm(addBlank ? lines.length-1 : null);
+};
+function lineHTML(L, i){
+  const kid = L.cat === "enfant";
+  return `<div class="card" style="margin-bottom:10px"><div class="crow"><b>${L.me?"👤 Moi":"Personne "+(i+1)}</b>${L.id && CV[L.id] ? '<span class="chip">enregistré</span>' : '<span class="chip j">nouveau</span>'}</div>
+  <div class="row2" style="margin-top:8px"><div><label class="fl">Prénom</label><input class="fi" id="fp${i}" value="${esc(L.prenom)}" maxlength="30" oninput="draftSet(${i},'prenom',this.value)"></div><div><label class="fl">Nom</label><input class="fi" value="${esc(L.nom)}" maxlength="30" oninput="draftSet(${i},'nom',this.value)"></div></div>
+  <div class="row2" style="margin-top:8px"><div><label class="fl">Catégorie</label><select class="fi" ${L.me?"disabled":""} onchange="draftSet(${i},'cat',this.value)"><option value="adulte" ${!kid?"selected":""}>Adulte</option><option value="enfant" ${kid?"selected":""}>Enfant (5-12 ans)</option></select></div>
+  <div><label class="fl">Plat</label>${kid ? `<div class="fi" style="opacity:.7">${esc(CFG.platEnfant)}</div>` : `<select class="fi" onchange="draftSet(${i},'plat',this.value)"><option value="">— choisir —</option><option value="A" ${L.plat==="A"?"selected":""}>🥩 ${esc(CFG.platA)}</option><option value="B" ${L.plat==="B"?"selected":""}>🐟 ${esc(CFG.platB)}</option></select>`}</div></div>
+  <input class="fi" style="margin-top:8px" placeholder="Allergie / régime particulier (facultatif)" value="${esc(L.note)}" maxlength="80" oninput="draftSet(${i},'note',this.value)">
+  <div id="fb${i}" class="fbadge" style="margin-top:9px"></div>
+  <div class="row2" style="margin-top:9px"><button class="bs" onclick="formAdd(${i})">➕ Ajouter un invité</button><button class="bd" onclick="formDel(${i})">🗑 Supprimer la ligne</button></div></div>`;
+}
+function updBadge(i){
+  const L = DRAFT.lines[i], el = $("fb"+i); if (!el) return;
+  const inf = lineInfoOf(L), d = dupMsg(L, i);
+  el.innerHTML = `<span><span class="chip ${inf.cls}">${esc(inf.label)}</span>${d ? ` <span class="chip r">${esc(d)}</span>` : ""}</span><b style="font-size:18px;color:var(--j)">${eur(inf.price)}</b>`;
+}
+function updTotal(){
+  const tot = DRAFT.lines.reduce((s,L) => s + lineInfoOf(L).price, 0);
+  const club = DRAFT.lines.filter(L => lineInfoOf(L).club).length;
+  if ($("fTotal")) $("fTotal").textContent = eur(tot);
+  if ($("fSub")) $("fSub").textContent = `${DRAFT.lines.length} personne(s)` + (club ? ` · dont ${club} prise(s) en charge par le club` : "");
+}
+function renderForm(focusIdx){
+  const D = DRAFT; if (!D) return;
+  if (D.step === "recap") return renderRecap();
+  const sh = $("ovMainBody"), st = sh.scrollTop;
+  let h = `<h3>📝 Saisie des participants</h3><p class="muted" style="margin-bottom:10px">Une ligne par personne (adulte ou enfant). Le prix s'affiche pour chaque ligne.</p>`;
+  h += D.lines.length ? D.lines.map(lineHTML).join("") : `<p class="muted" style="margin-bottom:10px">Aucune personne. « Valider » retirera toute la réservation.</p>`;
+  h += `<div class="card" style="margin:6px 0 10px"><div class="crow"><b>Total à régler</b><b id="fTotal" style="color:var(--j);font-size:22px"></b></div><div class="muted" id="fSub"></div></div>
+  <div class="row2"><button class="bs" onclick="formAdd(${D.lines.length-1})">➕ Ajouter un invité</button><button class="bp" onclick="formValidate()">✅ Valider la saisie</button></div>
+  <div class="row2" style="margin-top:8px"><button class="bs" onclick="closeSheet()">Fermer sans enregistrer</button><button class="bd" onclick="formDeleteAll()">🗑 Tout supprimer</button></div>`;
+  openSheet(h); window._lock = true; sh.scrollTop = st;
+  D.lines.forEach((_, i) => updBadge(i)); updTotal();
+  if (focusIdx != null){ const e = $("fp"+focusIdx); if (e){ e.focus(); if (e.scrollIntoView) e.scrollIntoView({block:"center"}); } }
+}
+window.renderForm = renderForm;
+window.draftSet = (i, f, v) => {
+  const L = DRAFT.lines[i]; L[f] = v;
+  if (f === "cat"){ if (v === "enfant") L.plat = ""; renderForm(); return; }
+  if (f === "prenom" || f === "nom"){ DRAFT.lines.forEach((_, j) => updBadge(j)); updTotal(); }
+};
+window.formAdd = i => { DRAFT.lines.splice(i+1, 0, newLine({nom:CU.nom})); renderForm(i+1); };
+window.formDel = i => { const L = DRAFT.lines[i]; if (L.id && CV[L.id]) DRAFT.del.push(L.id); DRAFT.lines.splice(i, 1); renderForm(); };
+window.formValidate = () => {
+  const D = DRAFT;
+  if (!D.lines.length && !D.del.length){ showT("Rien à valider."); return; }
+  for (let i = 0; i < D.lines.length; i++){
+    const L = D.lines[i], n = "Ligne " + (i+1) + " : ";
+    if (!L.prenom.trim() || !L.nom.trim()){ showT(n + "prénom et nom requis."); return; }
+    if (L.cat !== "enfant" && !L.plat){ showT(n + "choisis un plat."); return; }
+    const d = dupMsg(L, i); if (d){ showT(n + d.replace("⚠️ ", "")); return; }
+  }
+  D.step = "recap"; renderForm();
+};
+function renderRecap(){
+  const D = DRAFT; let tot = 0;
+  let h = `<h3>✅ Confirmer la saisie</h3>`;
+  D.lines.forEach(L => {
+    const inf = lineInfoOf(L); tot += inf.price;
+    h += `<div class="card" style="margin-bottom:8px"><div class="crow"><div><b>${esc(cap(L.prenom))} ${esc(L.nom.toUpperCase())}</b><div class="muted">${L.cat==="enfant"?"Enfant · "+esc(CFG.platEnfant):"Adulte · "+esc(platName(L.plat))}${L.note?" · "+esc(L.note):""}</div></div><b style="font-size:17px">${eur(inf.price)}</b></div><span class="chip ${inf.cls}" style="margin-top:6px">${esc(inf.label)}</span></div>`;
+  });
+  if (D.del.length) h += `<div class="banner warn">🗑 ${D.del.length} personne(s) seront retirée(s) de la réservation.</div>`;
+  h += `<div class="card" style="margin:6px 0 10px"><div class="crow"><b>Total à régler</b><b style="color:var(--j);font-size:22px">${eur(tot)}</b></div></div>
+  <div class="row2"><button class="bs" onclick="DRAFT.step='edit';renderForm()">✏️ Modifier</button><button class="bp" onclick="formSubmit()">✅ Confirmer</button></div>`;
+  openSheet(h); window._lock = true;
+}
+window.formSubmit = async () => {
+  const D = DRAFT; if (!D) return;
+  await ensureReservation(); await fresh();
+  const up = {};
+  D.del.forEach(id => { up[id] = null; });
+  D.lines.forEach(L => {
+    const id = L.id || uid();
+    const f = {prenom:L.prenom.trim().toUpperCase(), nom:L.nom.trim().toUpperCase(), type:L.cat, plat:L.cat==="enfant"?"E":L.plat, note:L.note.trim()};
+    if (CV[id]) Object.entries(f).forEach(([k, v]) => { up[`${id}/${k}`] = v; });
+    else up[id] = {...f, owner:CU.id, table:0, ts:Date.now()};
+  });
+  if (Object.keys(up).length) await update(ref(db, `${ROOT}/convives`), up);
+  DRAFT = null; closeSheet(); showT("Inscription enregistrée ✅");
+};
+window.formDeleteAll = () => openSheet(`<h3>Tout supprimer ?</h3><p style="margin-bottom:14px">Toutes les personnes de ta réservation seront retirées.</p><div class="row2"><button class="bs" onclick="renderForm()">Annuler</button><button class="bd" onclick="doDeleteAll()">Supprimer tout</button></div>`);
+window.doDeleteAll = async () => {
+  const up = {}; mine().forEach(c => { up[c.id] = null; });
+  if (Object.keys(up).length) await update(ref(db, `${ROOT}/convives`), up);
+  DRAFT = null; closeSheet(); showT("Réservation supprimée.");
+};
+window.setPlat = async (id, p) => { if (!canEdit()){ showT("Inscriptions closes."); return; } await update(ref(db, `${ROOT}/convives/${id}`), {plat: p}); };
+window.delConv = id => {
+  const c = CV[id]; if (!c) return;
+  askConfirm("Retirer " + cap(c.prenom) + " ?", "Cette personne sera retirée de la réservation.", async () => { await remove(ref(db, `${ROOT}/convives/${id}`)); showT("Retiré."); });
+};
+async function fresh(){ const s = await get(ref(db, `${ROOT}/convives`)); CV = s.val() || {}; }
+
+// Affecte des convives à une table (contrôle de capacité sur données fraîches)
+async function assignTable(ids, n, opts={}){
+  n = Math.round(num(n));
+  if (n < 0 || n > 99){ showT("Numéro de table invalide."); return false; }
+  await fresh();
+  if (n > 0){
+    const k = tableCount(n, ids);
+    if (k + ids.length > CFG.tableMax && !(isAdmin() && opts.force)){
+      showT(`Table ${n} : il ne reste que ${Math.max(0, CFG.tableMax-k)} place(s).`); return false;
+    }
+  }
+  const up = {}; ids.forEach(id => { if (CV[id]) up[`${id}/table`] = n; });
+  await update(ref(db, `${ROOT}/convives`), up);
+  return true;
+}
+window.applyTable = async (n) => {
+  const ids = window._tIds || [];
+  if (await assignTable(ids, n)){ closeSheet(); showT(n ? `Table ${n} réservée 🎉` : "Table retirée."); }
+};
+// Rejoindre une personne déjà inscrite
+window.joinPerson = async (tid) => {
+  const ids = window._tIds || [];
+  await fresh();
+  const t = CV[tid]; if (!t) return;
+  if (t.table){ if (await assignTable(ids, t.table)){ closeSheet(); showT(`Tu rejoins ${cap(t.prenom)} à la table ${t.table} 🎉`); } return; }
+  // personne pas encore placée : on les place ensemble (avec son groupe non placé) sur la 1re table libre
+  const group = convArr().filter(c => c.owner === t.owner && !c.table).map(c => c.id);
+  const all = [...new Set([...group, ...ids])];
+  if (all.length > CFG.tableMax){ showT("Groupe trop grand pour une table."); return; }
+  let n = 0;
+  for (let i = 1; i <= CFG.nbTables; i++){ if (tableCount(i) === 0){ n = i; break; } }
+  if (!n){ showT("Aucune table vide disponible — choisis un numéro de table."); return; }
+  await assignTable(all, n);
+  closeSheet(); showT(`Vous êtes placés ensemble à la table ${n} 🎉`);
+};
+window.openTable = (idsStr, tab) => {
+  window._tIds = idsStr ? idsStr.split(",") : mine().map(c => c.id);
+  window._tTab = tab || "num";
+  renderTableSheet();
+};
+window.setTab = t => { window._tTab = t; renderTableSheet(); };
+window.tableSearch = v => { window._tQ = v; renderTableSheet(true); };
+function renderTableSheet(keepFocus){
+  const ids = window._tIds, k = ids.length, tab = window._tTab;
+  const cur = ids.length ? (CV[ids[0]]||{}).table : 0;
+  let body = "";
+  if (tab === "num"){
+    const bt = byTable();
+    let btns = "";
+    for (let n = 1; n <= CFG.nbTables; n++){
+      const c = (bt[n]||[]).filter(x => !ids.includes(x.id)).length;
+      const dis = !isAdmin() && c + k > CFG.tableMax;
+      btns += `<button class="tbtn ${c===0?"empty":""} ${cur===n?"cur":""}" ${dis?"disabled":""} onclick="applyTable(${n})"><b>${n}</b><small>${c}/${CFG.tableMax}${c>0&&c<CFG.tableMin?" ⚠️":""}</small></button>`;
+    }
+    body = `<p class="muted" style="margin-bottom:10px">Tables de ${CFG.tableMin} à ${CFG.tableMax} personnes. Le traiteur ajuste la salle selon les réservations. Tu places ${k} personne${k>1?"s":""}.</p><div class="grid">${btns}</div>${cur?`<button class="bd" style="margin-top:12px;width:100%" onclick="applyTable(0)">Retirer ma table</button>`:""}`;
+  } else {
+    const q = (window._tQ||"").trim().toLowerCase();
+    const others = convArr().filter(c => !ids.includes(c.id) && (isAdmin() || c.owner !== (CU&&CU.id)));
+    const list = others.filter(c => !q || (c.prenom+" "+c.nom).toLowerCase().includes(q)).sort((a,b)=>(a.nom||"").localeCompare(b.nom||"")).slice(0,60);
+    body = `<input class="fi" id="tq" placeholder="Rechercher un prénom ou un nom…" value="${esc(window._tQ||"")}" oninput="tableSearch(this.value)" style="margin-bottom:10px">` +
+      (list.length ? list.map(c => {
+        const c2 = c.table ? tableCount(c.table) : 0;
+        const full = c.table && c2 + k > CFG.tableMax && !isAdmin();
+        return `<button class="pick" ${full?"disabled":""} onclick="joinPerson('${esc(c.id)}')"><span><b>${esc(fullName(c))}</b></span><span class="chip ${c.table?"j":""}">${c.table?`Table ${c.table} · ${c2}/${CFG.tableMax}`:"pas de table"}</span></button>`;
+      }).join("") : `<p class="muted">Personne trouvée.</p>`) +
+      `<p class="muted" style="margin-top:8px">Si la personne n'a pas encore de table, vous serez placés ensemble sur la première table libre.</p>`;
+  }
+  openSheet(`<h3>🪑 Choisir la table</h3><div class="tabs"><button class="bs ${tab==="num"?"on":""}" onclick="setTab('num')">Par n° de table</button><button class="bs ${tab==="who"?"on":""}" onclick="setTab('who')">Avec des personnes</button></div>${body}<button class="bs" style="width:100%;margin-top:12px" onclick="closeSheet()">Fermer</button>`);
+  if (keepFocus){ const i = $("tq"); if (i){ i.focus(); i.setSelectionRange(i.value.length, i.value.length); } }
+}
+
+// ═══ RENDU : MA RÉSERVATION ═══
+function renderMine(){
+  const l = mine(), due = dueOf(CU.id), paid = paidOf(CU.id);
+  let h = `<div class="hero"><h1>${esc(CFG.titre)}</h1><div class="pills">
+    <span class="pill">📅 ${esc(CFG.date)}${CFG.heure?" · "+esc(CFG.heure):""}</span><span class="pill">📍 ${esc(CFG.lieu)}</span>
+    <span class="pill">🍽️ ${eur(CFG.tarifAdulte)} / adulte</span><span class="pill">🧒 ${eur(CFG.tarifEnfant)} (5-12 ans)</span></div></div>`;
+  if (!isOpen()) h += `<div class="banner warn">🔒 ${deadlinePassed()?"La date limite d'inscription est dépassée":"Les inscriptions sont closes"}${isAdmin()?" (tu peux encore modifier en tant qu'organisateur)":" : tu peux consulter ta réservation mais plus la modifier"}.</div>`;
+  else if (/^\d{4}-\d{2}-\d{2}$/.test(CFG.dateLimite||"")) h += `<div class="banner ok">✅ Inscriptions ouvertes jusqu'au ${frDate(CFG.dateLimite)}</div>`;
+  if (isAdmin() && !Object.keys(ADH).length) h += `<div class="banner warn">⚠️ Annuaire des adhérents vide : tous les adultes sont facturés. Importe ton fichier dans Organisation → Adhérents.</div>`;
+  h += `<p class="muted" style="margin-bottom:8px">${CFG.adherentGratuit!==false?`Adhérent à jour de cotisation : repas pris en charge par le club. `:""}Invités adultes, adhérents non à jour : ${eur(CFG.tarifAdulte)} ; enfants : ${eur(CFG.tarifEnfant)}.</p>`;
+  h += `<div class="h2"><span>Ma réservation</span><span class="muted">${l.length} personne${l.length>1?"s":""}</span></div>`;
+  if (!l.length){
+    h += `<div class="card" style="text-align:center"><p style="margin-bottom:10px">Aucune inscription pour l'instant.</p><button class="bp" onclick="openForm()" ${canEdit()?"":"disabled"}>📝 Inscrire des personnes</button></div>`;
+  } else {
+    h += `<div class="conv">`;
+    l.forEach(c => {
+      const e = canEdit(), inf = convInfo(c);
+      const platBtns = c.type === "enfant"
+        ? `<div class="chip j">🧒 ${esc(CFG.platEnfant)}</div>`
+        : `<div class="seg"><button class="bs ${c.plat==="A"?"on":""}" ${e?"":"disabled"} onclick="setPlat('${esc(c.id)}','A')">🥩 ${esc(CFG.platA)}</button><button class="bs ${c.plat==="B"?"on":""}" ${e?"":"disabled"} onclick="setPlat('${esc(c.id)}','B')">🐟 ${esc(CFG.platB)}</button></div>`;
+      h += `<div class="card"><div class="crow"><div><div class="cname">${esc(fullName(c))}</div><span class="chip ${c.table?"g":"o"}">${c.table?"Table "+c.table:"Sans table"}</span> ${!c.plat?`<span class="chip r">Plat à choisir</span>`:""}</div><b style="color:var(--j)">${eur(inf.price)}</b></div><div style="margin:7px 0"><span class="chip ${inf.cls}">${esc(inf.label)}</span>${c.note?` <span class="muted">· ${esc(c.note)}</span>`:""}</div>${platBtns}</div>`;
+    });
+    h += `</div>`;
+    if (canEdit()) h += `<button class="bp" style="width:100%;margin-bottom:8px" onclick="openTable()">🪑 Choisir la table</button><div class="row2"><button class="bs" onclick="openForm(true)">➕ Ajouter un invité</button><button class="bs" onclick="openForm()">✏️ Modifier / supprimer</button></div>`;
+    h += `<div class="h2"><span>Règlement</span></div><div class="card"><div class="crow"><span>Montant à régler</span><b style="font-size:20px;color:var(--j)">${eur(due)}</b></div>`;
+    if (due === 0) h += `<p class="muted" style="margin-top:6px">Rien à régler : repas pris en charge par le club.</p>`;
+    else {
+      h += `<div class="crow" style="margin-top:6px"><span class="muted">Déjà reçu</span><b>${eur(paid)}</b></div><div class="crow"><span class="muted">Reste à régler</span><b>${eur(Math.max(0,due-paid))}</b></div>`;
+      h += paid >= due ? `<p style="margin-top:6px;color:var(--V);font-weight:600">✅ Réglé — merci !</p>` : `<p style="margin-top:6px;color:var(--O);font-weight:600">⏳ ${paid>0?"Règlement partiel":"En attente de règlement"} — les organisateurs l'enregistrent à la réception.</p>`;
+      payList(CU.id).forEach(p => { h += `<div class="muted">• ${esc(frDate(p.date))} · ${esc(p.mode||"")} · ${eur(num(p.montant))}</div>`; });
+    }
+    h += `</div>`;
+  }
+  $("view-mine").innerHTML = h;
+}
+
+// ═══ RENDU : PLAN DE SALLE ═══
+window.planQ = v => { planFilter = v; renderPlan(true); };
+window.joinTable = n => {
+  const ids = mine().map(c => c.id);
+  if (!ids.length){ showT("Inscris-toi d'abord dans « Ma réservation »."); sv("mine"); return; }
+  askConfirm("Rejoindre la table " + n + " ?", `Toute ta réservation (${ids.length} personne${ids.length>1?"s":""}) sera placée à la table ${n}.`, async () => {
+    window._tIds = ids; await applyTable(n);
+  });
+};
+function renderPlan(keep){
+  const bt = byTable(), q = planFilter.trim().toLowerCase(), s = stats();
+  const nums = Object.keys(bt).map(Number).sort((a,b)=>a-b);
+  let h = `<div class="sum"><div class="stat"><b>${s.total}</b><span>inscrits</span></div><div class="stat"><b>${nums.length}</b><span>tables ouvertes</span></div><div class="stat"><b>${s.sansTable}</b><span>à placer</span></div></div>
+  <input class="fi" id="pq" placeholder="🔎 Chercher une personne…" value="${esc(planFilter)}" oninput="planQ(this.value)" style="margin-bottom:12px">`;
+  if (isAdmin()) h += `<button class="bs" style="width:100%;margin-bottom:10px" onclick="openPrint()">🖨️ Chevalets &amp; plan par table à imprimer</button>`;
+  let any = false;
+  nums.forEach(n => {
+    const list = bt[n].slice().sort((a,b)=>(a.nom||"").localeCompare(b.nom||""));
+    if (q && !list.some(c => (c.prenom+" "+c.nom).toLowerCase().includes(q))) return;
+    any = true;
+    const st = tableState(n);
+    const hasMe = CU && list.some(c => c.owner === CU.id);
+    h += `<div class="card tcard ${st.cls}"><div class="crow"><b style="font-size:17px">Table ${n}</b><span><span class="chip ${st.chip}">${st.k}/${CFG.tableMax}</span> <span class="chip ${st.chip}">${esc(st.label)}</span></span></div><div class="occ">` +
+      list.map(c => `<div class="${CU&&c.owner===CU.id?"me":""}"><span>${esc(fullName(c))}</span><span>${c.plat?platIcon(c.plat):"❔"}</span></div>`).join("") + `</div>` +
+      (canEdit() && !hasMe && st.k < CFG.tableMax ? `<button class="bs" style="width:100%;margin-top:9px" onclick="joinTable(${n})">Rejoindre cette table</button>` : "") + `</div>`;
+  });
+  const unplaced = convArr().filter(c => !c.table && (!q || (c.prenom+" "+c.nom).toLowerCase().includes(q)));
+  if (unplaced.length){
+    any = true;
+    h += `<div class="card tcard"><div class="crow"><b>Pas encore de table</b><span class="chip o">${unplaced.length}</span></div><div class="occ">` + unplaced.map(c => `<div class="${CU&&c.owner===CU.id?"me":""}"><span>${esc(fullName(c))}</span><span>${c.plat?platIcon(c.plat):"❔"}</span></div>`).join("") + `</div></div>`;
+  }
+  if (!any) h += `<p class="muted">Aucune inscription ne correspond.</p>`;
+  $("view-plan").innerHTML = h;
+  if (keep){ const i = $("pq"); if (i){ i.focus(); i.setSelectionRange(i.value.length, i.value.length); } }
+}
+
+// ═══ RENDU : ORGANISATION ═══
+function caterer(){
+  const bt = byTable(), nums = Object.keys(bt).map(Number).sort((a,b)=>a-b);
+  const rows = nums.map(n => {
+    const l = bt[n], r = {n, k:l.length, A:0, B:0, E:0, none:0};
+    l.forEach(c => { if (c.plat==="A"||c.plat==="B"||c.plat==="E") r[c.plat]++; else r.none++; });
+    r.st = tableState(n); return r;
+  });
+  const tot = {A:0, B:0, E:0, none:0}; rows.forEach(r => { tot.A+=r.A; tot.B+=r.B; tot.E+=r.E; tot.none+=r.none; });
+  const s = stats();
+  const un = convArr().filter(c => !c.table); un.forEach(c => { if (c.plat==="A") tot.A++; else if (c.plat==="B") tot.B++; else if (c.plat==="E") tot.E++; else tot.none++; });
+  const sizes = {}; rows.forEach(r => sizes[r.k] = (sizes[r.k]||0) + 1);
+  const A = tot.A + num(CFG.extraA), B = tot.B + num(CFG.extraB), E = tot.E + num(CFG.extraE);
+  const cout = (A + B) * num(CFG.coutAdulte) + E * num(CFG.coutEnfant);
+  return {rows, tot, sizes, A, B, E, cout, s};
+}
+function renderAdmin(){
+  const tabs = [["synth","📊 Synthèse"],["inscrits","👥 Inscrits"],["paie","💶 Paiements"],["adh","🪪 Adhérents"],["param","⚙️ Paramètres"]];
+  let h = `<div class="tabs">${tabs.map(([k,l]) => `<button class="bs ${adminTab===k?"on":""}" onclick="adminTab='${k}';render()">${l}</button>`).join("")}</div>`;
+  if (adminTab === "synth") h += adminSynth();
+  else if (adminTab === "inscrits") h += adminInscrits();
+  else if (adminTab === "paie") h += adminPaie();
+  else if (adminTab === "adh") h += adminAdh();
+  else h += adminParam();
+  $("view-admin").innerHTML = h;
+}
+function adminSynth(){
+  const c = caterer(), s = c.s;
+  const owners = [...new Set(convArr().map(x => x.owner))];
+  const due = owners.reduce((t,o)=>t+dueOf(o),0), got = owners.reduce((t,o)=>t+paidOf(o),0);
+  const modes = {}; owners.forEach(o => payList(o).forEach(p => { const m = p.mode || "Autre"; modes[m] = (modes[m]||0) + num(p.montant); }));
+  const answered = new Set(convArr().map(x => x.owner));
+  const silent = MB.filter(m => !answered.has(m.id)).length;
+  const aRelancer = owners.filter(o => dueOf(o) > paidOf(o)).length;
+  let h = `<div class="sum"><div class="stat"><b>${s.total}</b><span>repas</span></div><div class="stat"><b>${s.adherent}</b><span>pris en charge club</span></div><div class="stat"><b>${s.adulte}</b><span>adultes payants</span></div><div class="stat"><b>${s.enfant}</b><span>enfants</span></div></div>
+  <div class="sum"><div class="stat"><b>${c.tot.A}</b><span>${esc(CFG.platA)}</span></div><div class="stat"><b>${c.tot.B}</b><span>${esc(CFG.platB)}</span></div><div class="stat"><b>${c.tot.E}</b><span>${esc(CFG.platEnfant)}</span></div><div class="stat"><b>${c.tot.none}</b><span>plat non choisi</span></div></div>
+  <p class="muted" style="margin-bottom:8px">${MB.length?`${silent} membre(s) de l'annuaire n'ont pas encore répondu. `:""}${s.sansTable} personne(s) sans table. ${aRelancer} réservation(s) avec un solde à encaisser.</p>`;
+  h += `<div class="h2"><span>Commande traiteur</span></div><div class="card"><table class="t"><tr><th>Plat</th><th class="n">Inscrits</th><th class="n">+ Suppl.</th><th class="n">Total</th></tr>
+    <tr><td>🥩 ${esc(CFG.platA)}</td><td class="n">${c.tot.A}</td><td class="n">${num(CFG.extraA)}</td><td class="n"><b>${c.A}</b></td></tr>
+    <tr><td>🐟 ${esc(CFG.platB)}</td><td class="n">${c.tot.B}</td><td class="n">${num(CFG.extraB)}</td><td class="n"><b>${c.B}</b></td></tr>
+    <tr><td>🧒 ${esc(CFG.platEnfant)}</td><td class="n">${c.tot.E}</td><td class="n">${num(CFG.extraE)}</td><td class="n"><b>${c.E}</b></td></tr></table>
+    <div class="crow" style="margin-top:8px"><span>Montant estimé traiteur</span><b style="color:var(--j)">${eur(c.cout)}</b></div></div>`;
+  h += `<div class="h2"><span>Tables (${c.rows.length})</span></div><div class="card"><table class="t"><tr><th>Table</th><th class="n">Pers.</th><th class="n">🥩</th><th class="n">🐟</th><th class="n">🧒</th><th>État</th></tr>` +
+    c.rows.map(r => `<tr><td>${r.n}</td><td class="n"><b>${r.k}</b></td><td class="n">${r.A}</td><td class="n">${r.B}</td><td class="n">${r.E}</td><td><span class="chip ${r.st.chip}">${esc(r.st.label)}</span></td></tr>`).join("") + `</table>
+    <p class="muted" style="margin-top:8px">Répartition : ${Object.keys(c.sizes).sort((a,b)=>a-b).map(k => `${c.sizes[k]} table(s) de ${k}`).join(" · ") || "—"}</p></div>`;
+  h += `<div class="h2"><span>Finances</span></div><div class="card"><table class="t">
+    <tr><td>À encaisser (invités, non à jour, enfants)</td><td class="n">${eur(due)}</td></tr><tr><td>Déjà encaissé</td><td class="n">${eur(got)}</td></tr><tr><td>Reste à percevoir</td><td class="n">${eur(Math.max(0,due-got))}</td></tr>
+    ${Object.keys(modes).map(m => `<tr><td class="muted">&nbsp;&nbsp;dont ${esc(m)}</td><td class="n">${eur(modes[m])}</td></tr>`).join("")}
+    <tr><td>Repas pris en charge par le club (${s.adherent})</td><td class="n">${eur(s.adherent*num(CFG.coutAdulte))}</td></tr>
+    <tr><td>Coût traiteur estimé</td><td class="n">${eur(c.cout)}</td></tr><tr><td><b>Solde prévisionnel</b></td><td class="n"><b style="color:${due-c.cout>=0?"var(--V)":"var(--R)"}">${eur(due-c.cout)}</b></td></tr></table>
+    <p class="muted" style="margin-top:6px">Le solde prévisionnel = encaissements attendus − coût traiteur ; la part du club correspond aux adhérents à jour.</p></div>`;
+  h += `<button class="bp" style="width:100%;margin-top:12px" onclick="openPrint()">🖨️ Chevalets &amp; plan par table (impression)</button><button class="bs" style="width:100%;margin-top:8px" onclick="exportXlsx()">📥 Exporter en Excel (traiteur + plan de table)</button>`;
+  return h;
+}
+function adminInscrits(){
+  const q = (window._aq||"").toLowerCase();
+  const l = convArr().filter(c => !q || (c.prenom+" "+c.nom).toLowerCase().includes(q)).sort((a,b)=>(a.nom||"").localeCompare(b.nom||"")||(a.prenom||"").localeCompare(b.prenom||""));
+  let h = `<div class="row2" style="margin-bottom:10px"><input class="fi" placeholder="🔎 Rechercher…" value="${esc(window._aq||"")}" oninput="window._aq=this.value;renderAdmin2()"><button class="bp" onclick="openAdminAdd()">➕ Ajouter</button></div><p class="muted">${l.length} personne(s).</p>`;
+  l.forEach(c => {
+    h += `<div class="adm-row"><div><b>${esc(fullName(c))}</b><div class="muted">via ${esc(ownerLabel(c.owner))} · <span class="chip ${convInfo(c).cls}">${eur(priceOf(c))}${convInfo(c).club?" · club":""}</span>${c.note?" · "+esc(c.note):""}</div></div><button class="bd" onclick="delConv('${esc(c.id)}')">🗑</button><div class="ctl">
+      <select class="fi" onchange="admSet('${esc(c.id)}','type',this.value)">${["adulte","enfant"].map(t=>`<option value="${t}" ${(c.type==="enfant"?"enfant":"adulte")===t?"selected":""}>${typeName(t)}</option>`).join("")}</select>
+      <select class="fi" onchange="admSet('${esc(c.id)}','plat',this.value)"><option value="" ${!c.plat?"selected":""}>— plat —</option><option value="A" ${c.plat==="A"?"selected":""}>${esc(CFG.platA)}</option><option value="B" ${c.plat==="B"?"selected":""}>${esc(CFG.platB)}</option><option value="E" ${c.plat==="E"?"selected":""}>${esc(CFG.platEnfant)}</option></select>
+      <input class="fi" type="number" min="0" max="99" placeholder="Table" value="${c.table||""}" onchange="admSet('${esc(c.id)}','table',this.value)"></div></div>`;
+  });
+  return h;
+}
+window.renderAdmin2 = () => { renderAdmin(); const i = document.querySelector("#view-admin input.fi"); if (i){ i.focus(); i.setSelectionRange(i.value.length,i.value.length); } };
+window.admSet = async (id, f, v) => {
+  if (f === "table"){
+    const n = Math.round(num(v));
+    const k = n ? tableCount(n,[id]) : 0;
+    if (n && k + 1 > CFG.tableMax){ askConfirm("Table " + n + " pleine", `Elle compte déjà ${k} personnes (max ${CFG.tableMax}). Forcer quand même ?`, async () => { await assignTable([id], n, {force:true}); }); renderAdmin(); return; }
+    await assignTable([id], n, {force:true}); return;
+  }
+  const up = {[f]: v}; if (f==="type" && v==="enfant") up.plat = "E";
+  await update(ref(db, `${ROOT}/convives/${id}`), up);
+};
+window.openAdminAdd = () => openSheet(`<h3>Ajouter une personne</h3>
+  <div class="row2"><div class="fg"><label class="fl">Prénom</label><input class="fi" id="aP"></div><div class="fg"><label class="fl">Nom</label><input class="fi" id="aN"></div></div>
+  <div class="row2"><div class="fg"><label class="fl">Type</label><select class="fi" id="aT"><option value="adulte">Adulte</option><option value="enfant">Enfant</option></select></div><div class="fg"><label class="fl">Table</label><input class="fi" id="aTb" type="number" min="0" max="99"></div></div>
+  <div class="fg"><label class="fl">Plat</label><select class="fi" id="aPl"><option value="">— à choisir —</option><option value="A">${esc(CFG.platA)}</option><option value="B">${esc(CFG.platB)}</option><option value="E">${esc(CFG.platEnfant)}</option></select></div>
+  <div class="row2"><button class="bs" onclick="closeSheet()">Annuler</button><button class="bp" onclick="doAdminAdd()">Ajouter</button></div>`);
+window.doAdminAdd = async () => {
+  const p = $("aP").value.trim(), n = $("aN").value.trim(); if (!p){ showT("Prénom requis."); return; }
+  const t = $("aT").value;
+  await update(ref(db, `${ROOT}/reservations/admin`), {prenom:"Organisateurs", nom:"", ts: Date.now()});
+  const id = uid();
+  await set(ref(db, `${ROOT}/convives/${id}`), {owner:"admin", prenom:p.toUpperCase(), nom:n.toUpperCase(), type:t, plat: t==="enfant"?"E":$("aPl").value, table: Math.round(num($("aTb").value)), ts: Date.now()});
+  closeSheet(); showT("Ajouté.");
+};
+function adminPaie(){
+  const f = window._pf || "todo";
+  const all = [...new Set(convArr().map(c => c.owner))].filter(o => dueOf(o) > 0 || paidOf(o) > 0);
+  const st = o => paidOf(o) >= dueOf(o) ? "ok" : paidOf(o) > 0 ? "part" : "todo";
+  const owners = all.filter(o => f==="all" || (f==="ok" ? st(o)==="ok" : st(o)!=="ok")).sort((a,b)=>ownerLabel(a).localeCompare(ownerLabel(b)));
+  const due = all.reduce((s,o)=>s+dueOf(o),0), got = all.reduce((s,o)=>s+paidOf(o),0);
+  let h = `<div class="sum"><div class="stat"><b>${eur(due)}</b><span>à encaisser</span></div><div class="stat"><b>${eur(got)}</b><span>encaissé</span></div><div class="stat"><b>${eur(Math.max(0,due-got))}</b><span>reste</span></div></div>
+  <div class="tabs"><button class="bs ${f==="todo"?"on":""}" onclick="window._pf='todo';render()">À encaisser</button><button class="bs ${f==="ok"?"on":""}" onclick="window._pf='ok';render()">Réglés</button><button class="bs ${f==="all"?"on":""}" onclick="window._pf='all';render()">Tous</button></div>`;
+  if (!owners.length) h += `<p class="muted">Aucune réservation dans cette liste.</p>`;
+  owners.forEach(o => {
+    const d = dueOf(o), p = paidOf(o), s = st(o), tel = (RS[o]||{}).tel;
+    h += `<div class="card" style="margin-bottom:9px"><div class="crow"><div><b>${esc(ownerLabel(o))}</b><div class="muted">${tel?`<a href="tel:${esc(tel)}" style="color:var(--j)">${esc(tel)}</a>`:""} · ${convArr().filter(c=>c.owner===o).length} pers.</div></div><span class="chip ${s==="ok"?"g":s==="part"?"o":"r"}">${s==="ok"?"Réglé":s==="part"?"Partiel":"À encaisser"}</span></div>
+    <table class="t" style="margin-top:6px"><tr><td>Dû</td><td class="n"><b>${eur(d)}</b></td><td>Reçu</td><td class="n"><b>${eur(p)}</b></td><td>Reste</td><td class="n"><b>${eur(Math.max(0,d-p))}</b></td></tr></table>
+    ${payList(o).map(x => `<div class="crow" style="margin-top:5px"><span class="muted">${esc(frDate(x.date))} · ${esc(x.mode||"")} · <b>${eur(num(x.montant))}</b>${x.note?" · "+esc(x.note):""}</span><button class="bd" style="padding:2px 8px" onclick="delPay('${esc(o)}','${esc(x.id)}')">✖</button></div>`).join("")}
+    <button class="bp" style="width:100%;margin-top:9px" onclick="openPay('${esc(o)}')">➕ Enregistrer un paiement</button></div>`;
+  });
+  return h;
+}
+window.openPay = o => openSheet(`<h3>Paiement — ${esc(ownerLabel(o))}</h3><p style="margin-bottom:10px">Dû : <b>${eur(dueOf(o))}</b> · Déjà reçu : <b>${eur(paidOf(o))}</b></p>
+  <div class="row2"><div class="fg"><label class="fl">Montant (€)</label><input class="fi" id="pAmt" type="number" step="0.5" min="0" value="${Math.max(0,dueOf(o)-paidOf(o))}"></div><div class="fg"><label class="fl">Date</label><input class="fi" id="pDate" type="date" value="${todayISO()}"></div></div>
+  <div class="fg"><label class="fl">Mode de paiement</label><select class="fi" id="pMode"><option>CB</option><option>Chèque</option><option>Espèces</option><option>Virement</option></select></div>
+  <div class="fg"><label class="fl">Note (n° de chèque, banque…)</label><input class="fi" id="pNote" maxlength="60"></div>
+  <div class="row2"><button class="bs" onclick="closeSheet()">Annuler</button><button class="bp" onclick="doPay('${esc(o)}')">Valider</button></div>`);
+window.doPay = async o => {
+  const m = num($("pAmt").value); if (!(m > 0)){ showT("Montant invalide."); return; }
+  await set(ref(db, `${ROOT}/reservations/${o}/paiements/${uid()}`), {montant:m, mode:$("pMode").value, date:$("pDate").value || todayISO(), note:$("pNote").value.trim()});
+  closeSheet(); showT("Paiement enregistré ✅");
+};
+window.delPay = (o, pid) => askConfirm("Supprimer ce paiement ?", "Il sera retiré du suivi.", async () => { await remove(ref(db, `${ROOT}/reservations/${o}/${pid==="_legacy"?"paye":"paiements/"+pid}`)); showT("Paiement supprimé."); });
+
+// ═══ ADHÉRENTS : import Excel / CSV ═══
+const cellText = v => { if (v == null) return ""; if (v instanceof Date) return v.toISOString().slice(0,10); if (typeof v === "object") return String(v.result ?? v.text ?? (v.richText ? v.richText.map(r => r.text).join("") : "")); return String(v); };
+function parseCSV(txt){
+  txt = txt.replace(/^\uFEFF/, ""); const first = txt.split(/\r?\n/)[0] || "";
+  const d = [";","\t",","].sort((a,b) => first.split(b).length - first.split(a).length)[0];
+  const rows = []; let row = [], cur = "", q = false;
+  for (let i = 0; i < txt.length; i++){
+    const ch = txt[i];
+    if (q){ if (ch === '"'){ if (txt[i+1] === '"'){ cur += '"'; i++; } else q = false; } else cur += ch; }
+    else if (ch === '"') q = true;
+    else if (ch === d){ row.push(cur); cur = ""; }
+    else if (ch === "\n" || ch === "\r"){ if (ch === "\r" && txt[i+1] === "\n") i++; row.push(cur); cur = ""; rows.push(row); row = []; }
+    else cur += ch;
+  }
+  if (cur !== "" || row.length){ row.push(cur); rows.push(row); }
+  return rows;
+}
+function parseAdhRows(rows){
+  let hi = -1, col = {};
+  for (let r = 0; r < Math.min(rows.length, 10); r++){
+    const c = {};
+    rows[r].map(normStr).forEach((h, j) => {
+      if (!h) return;
+      if (h.includes("PRENOM")){ if (c.prenom === undefined) c.prenom = j; }
+      else if (h === "NOM" || h === "NOMDEFAMILLE" || h === "NOMS"){ if (c.nom === undefined) c.nom = j; }
+      else if (/TEL|MOBILE|PORTABLE/.test(h)){ if (c.tel === undefined) c.tel = j; }
+      else if (/COTIS|AJOUR|ADHES/.test(h)){ if (c.cot === undefined) c.cot = j; }
+    });
+    if (c.prenom !== undefined && c.nom !== undefined){ hi = r; col = c; break; }
+  }
+  if (hi < 0) return {list:[], skipped:0, err:"En-têtes introuvables : la 1re ligne doit contenir « Nom » et « Prénom »."};
+  if (col.cot === undefined) return {list:[], skipped:0, err:"Colonne « Cotisation à jour » introuvable dans l'en-tête."};
+  const YES = new Set(["OUI","O","X","1","TRUE","VRAI","OK","YES","Y","AJOUR","PAYE","PAYEE"]);
+  const map = new Map(); let skipped = 0;
+  rows.slice(hi+1).forEach(r => {
+    const prenom = String(r[col.prenom] ?? "").trim(), nom = String(r[col.nom] ?? "").trim();
+    if (!prenom && !nom) return;
+    if (!prenom || !nom){ skipped++; return; }
+    let tel = col.tel !== undefined ? normPhone(String(r[col.tel] ?? "")) : "";
+    if (/^[67]\d{8}$/.test(tel)) tel = "0" + tel;
+    map.set(adhKey(prenom, nom), {prenom:cap(prenom), nom:nom.toUpperCase(), tel, cotisation: YES.has(normStr(r[col.cot]))});
+  });
+  return {list:[...map.values()], skipped, err:""};
+}
+window.pickAdh = async inp => {
+  const f = inp.files[0]; if (!f) return;
+  try {
+    let rows;
+    if (/\.csv$/i.test(f.name)) rows = parseCSV(await f.text());
+    else {
+      if (typeof ExcelJS === "undefined") throw new Error("ExcelJS non chargé");
+      const wb = new ExcelJS.Workbook(); await wb.xlsx.load(await f.arrayBuffer());
+      const ws = wb.worksheets[0]; rows = [];
+      ws.eachRow({includeEmpty:false}, row => { const v = []; row.eachCell({includeEmpty:true}, (cell, n) => { v[n-1] = cellText(cell.value); }); rows.push(Array.from(v, x => x ?? "")); });
+    }
+    window._imp = parseAdhRows(rows);
+  } catch(e){ window._imp = {list:[], skipped:0, err:"Lecture impossible : " + e.message}; }
+  renderAdmin();
+};
+function impPreview(){
+  const imp = window._imp; if (!imp) return "";
+  if (imp.err) return `<div class="banner warn">${esc(imp.err)}</div>`;
+  const ok = imp.list.filter(a => a.cotisation).length;
+  return `<div class="banner ok">${imp.list.length} adhérent(s) lus : <b>${ok} à jour</b>, ${imp.list.length-ok} non à jour${imp.skipped?`, ${imp.skipped} ligne(s) ignorée(s) (nom ou prénom manquant)`:""}.<br><span class="muted">${imp.list.slice(0,4).map(a => esc(a.prenom+" "+a.nom)+(a.cotisation?" ✅":" ⏳")).join(" · ")}…</span></div>
+  <div class="row2"><select class="fi" id="impMode"><option value="replace">Remplacer toute la liste</option><option value="merge">Ajouter / mettre à jour</option></select><button class="bp" onclick="doImport()">Importer</button></div>`;
+}
+window.doImport = () => {
+  const imp = window._imp; if (!imp || !imp.list.length) return;
+  const mode = $("impMode").value, obj = {};
+  imp.list.forEach(a => { obj[adhKey(a.prenom, a.nom)] = {prenom:a.prenom, nom:a.nom, tel:a.tel, cotisation:a.cotisation}; });
+  const go = async () => { if (mode === "replace") await set(ref(db, `${ROOT}/adherents`), obj); else await update(ref(db, `${ROOT}/adherents`), obj); window._imp = null; closeSheet(); showT(imp.list.length + " adhérents importés ✅"); };
+  if (mode === "replace" && Object.keys(ADH).length) askConfirm("Remplacer l'annuaire ?", `Les ${Object.keys(ADH).length} adhérents actuels seront remplacés par ${imp.list.length}.`, go); else go();
+};
+window.dlTemplate = async () => {
+  if (typeof ExcelJS === "undefined"){ showT("ExcelJS non chargé."); return; }
+  const wb = new ExcelJS.Workbook(), ws = wb.addWorksheet("Adhérents");
+  ws.columns = [{header:"Nom",width:24},{header:"Prénom",width:20},{header:"Téléphone",width:16},{header:"Cotisation à jour",width:18}];
+  ws.addRow(["DUPONT","Jean","06 12 34 56 78","Oui"]); ws.addRow(["MARTIN","Paul","07 98 76 54 32","Non"]);
+  ws.getRow(1).font = {bold:true};
+  const buf = await wb.xlsx.writeBuffer(), a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([buf], {type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"})); a.download = "modele-adherents.xlsx";
+  document.body.appendChild(a); a.click(); a.remove();
+};
+function adminAdh(){
+  const l = Object.entries(ADH).map(([k,a]) => ({k, ...a})), ok = l.filter(a => a.cotisation).length;
+  const q = (window._hq||"").toLowerCase();
+  let h = `<div class="sum"><div class="stat"><b>${l.length}</b><span>adhérents</span></div><div class="stat"><b>${ok}</b><span>à jour</span></div><div class="stat"><b>${l.length-ok}</b><span>non à jour</span></div></div>`;
+  if (!l.length) h += `<div class="banner warn">Annuaire vide : importe ton fichier. Tant qu'il est vide, tous les adultes sont considérés comme payants.</div>`;
+  h += `<div class="card" style="margin-bottom:12px"><b>📥 Importer depuis Excel / CSV</b><p class="muted" style="margin:6px 0">1re ligne = en-têtes : <b>Nom, Prénom, Téléphone, Cotisation à jour</b> (Oui / Non).</p><input type="file" id="adhFile" accept=".xlsx,.csv" class="fi" onchange="pickAdh(this)" style="margin-bottom:8px">${impPreview()}<button class="bs" style="margin-top:8px" onclick="dlTemplate()">⬇️ Télécharger un modèle</button></div>
+  <div class="row2" style="margin-bottom:8px"><input class="fi" placeholder="🔎 Rechercher…" value="${esc(window._hq||"")}" oninput="window._hq=this.value;renderAdmin2()"><button class="bp" onclick="openAdhAdd()">➕ Ajouter</button></div>`;
+  l.filter(a => !q || (a.prenom+" "+a.nom).toLowerCase().includes(q)).sort((a,b)=>(a.nom||"").localeCompare(b.nom||"")).slice(0,300).forEach(a => {
+    h += `<div class="adm-row"><div><b>${esc(cap(a.prenom))} ${esc(a.nom)}</b><div class="muted">${esc(a.tel||"—")}</div></div><button class="bd" onclick="adhDel('${esc(a.k)}')">🗑</button><div class="ctl"><select class="fi" onchange="adhSet('${esc(a.k)}',this.value==='1')"><option value="1" ${a.cotisation?"selected":""}>Cotisation à jour</option><option value="0" ${!a.cotisation?"selected":""}>Non à jour</option></select></div></div>`;
+  });
+  return h;
+}
+window.adhSet = async (k, v) => { await update(ref(db, `${ROOT}/adherents/${k}`), {cotisation: v}); };
+window.adhDel = k => askConfirm("Retirer cet adhérent ?", "Il sera supprimé de l'annuaire.", async () => { await remove(ref(db, `${ROOT}/adherents/${k}`)); });
+window.openAdhAdd = () => openSheet(`<h3>Ajouter un adhérent</h3><div class="row2"><div class="fg"><label class="fl">Prénom</label><input class="fi" id="hP"></div><div class="fg"><label class="fl">Nom</label><input class="fi" id="hN"></div></div><div class="fg"><label class="fl">Téléphone</label><input class="fi" id="hT" inputmode="tel"></div><div class="fg"><label class="fl">Cotisation</label><select class="fi" id="hC"><option value="1">À jour</option><option value="0">Non à jour</option></select></div><div class="row2"><button class="bs" onclick="closeSheet()">Annuler</button><button class="bp" onclick="doAdhAdd()">Ajouter</button></div>`);
+window.doAdhAdd = async () => {
+  const p = $("hP").value.trim(), n = $("hN").value.trim(); if (!p || !n){ showT("Prénom et nom requis."); return; }
+  await set(ref(db, `${ROOT}/adherents/${adhKey(p,n)}`), {prenom:cap(p), nom:n.toUpperCase(), tel:normPhone($("hT").value), cotisation:$("hC").value==="1"});
+  closeSheet(); showT("Adhérent ajouté.");
+};
+
+const PARAMS = [
+  ["titre","Titre","text"],["date","Date","text"],["heure","Heure","text"],["lieu","Lieu","text"],["dateLimite","Date limite d'inscription (verrouillage automatique)","date"],
+  ["tarifAdulte","Tarif adulte (€)","number"],["tarifEnfant","Tarif enfant 5-12 ans (€)","number"],["coutAdulte","Coût traiteur adulte (€)","number"],["coutEnfant","Coût traiteur enfant (€)","number"],
+  ["platA","Plat n°1 (viande)","text"],["platB","Plat n°2 (poisson)","text"],["platEnfant","Menu enfant","text"],
+  ["tableMin","Taille mini d'une table","number"],["tableMax","Taille maxi d'une table","number"],["nbTables","Nombre de numéros de table proposés","number"],
+  ["extraA","Menus supplémentaires plat 1","number"],["extraB","Menus supplémentaires plat 2","number"],["extraE","Menus supplémentaires enfant","number"]
+];
+function adminParam(){
+  let h = `<div class="card">`;
+  PARAMS.forEach(([k,l,t]) => h += `<div class="fg"><label class="fl">${l}</label><input class="fi" id="p_${k}" type="${t}" value="${esc(CFG[k])}"></div>`);
+  h += `<div class="fg"><label class="fl">Adhérent à jour de cotisation : repas pris en charge par le club</label><select class="fi" id="p_adherentGratuit"><option value="1" ${CFG.adherentGratuit?"selected":""}>Oui</option><option value="0" ${!CFG.adherentGratuit?"selected":""}>Non (tout adulte paie)</option></select></div>
+  <div class="fg"><label class="fl">Inscriptions</label><select class="fi" id="p_ouvert"><option value="1" ${isOpen()?"selected":""}>Ouvertes</option><option value="0" ${!isOpen()?"selected":""}>Closes (lecture seule)</option></select></div>
+  <button class="bp" style="width:100%" onclick="saveParams()">💾 Enregistrer</button></div>`;
+  return h;
+}
+window.saveParams = async () => {
+  const o = {};
+  PARAMS.forEach(([k,,t]) => { const v = $("p_"+k).value; o[k] = t==="number" ? num(v) : v.trim(); });
+  o.adherentGratuit = $("p_adherentGratuit").value === "1"; o.ouvert = $("p_ouvert").value === "1";
+  if (o.tableMin > o.tableMax){ showT("Le minimum dépasse le maximum."); return; }
+  await set(ref(db, `${ROOT}/config`), o); showT("Paramètres enregistrés ✅");
+};
+
+// ═══ EXPORT EXCEL ═══
+window.exportXlsx = async () => {
+  if (typeof ExcelJS === "undefined"){ showT("Export indisponible (ExcelJS non chargé)."); return; }
+  const wb = new ExcelJS.Workbook(), c = caterer();
+  const head = ws => { const r = ws.getRow(1); r.font = {bold:true}; r.fill = {type:"pattern",pattern:"solid",fgColor:{argb:"FFCCFF00"}}; ws.views = [{state:"frozen",ySplit:1}]; };
+  // 1. Réservations
+  let ws = wb.addWorksheet("Réservations");
+  ws.columns = [{header:"Nom",width:22},{header:"Prénom",width:18},{header:"Type",width:12},{header:"Plat",width:14},{header:"Table",width:8},{header:"Réservant",width:26},{header:"Tarif (€)",width:10},{header:"Remarque",width:30}];
+  convArr().sort((a,b)=>(a.nom||"").localeCompare(b.nom||"")).forEach(x => ws.addRow([x.nom, cap(x.prenom), typeLabel(x), x.plat?platName(x.plat):"", x.table||"", ownerLabel(x.owner), priceOf(x), x.note||""]));
+  head(ws);
+  // 2. Paiements
+  ws = wb.addWorksheet("Paiements");
+  ws.columns = [{header:"Réservant",width:28},{header:"Mobile",width:15},{header:"Personnes",width:10},{header:"À régler (€)",width:13},{header:"Reçu (€)",width:11},{header:"Reste (€)",width:11},{header:"Détail des paiements",width:50}];
+  [...new Set(convArr().map(x=>x.owner))].sort((a,b)=>ownerLabel(a).localeCompare(ownerLabel(b))).forEach(o => ws.addRow([ownerLabel(o),(RS[o]||{}).tel||"",convArr().filter(x=>x.owner===o).length,dueOf(o),paidOf(o),Math.max(0,dueOf(o)-paidOf(o)),payList(o).map(p=>`${frDate(p.date)} ${p.mode||""} ${num(p.montant)}€${p.note?" ("+p.note+")":""}`).join(" ; ")]));
+  head(ws);
+  // 3. Plan de table (par table)
+  ws = wb.addWorksheet("Plan de table");
+  ws.columns = [{header:"Table",width:8},{header:"N°",width:6},{header:"Nom",width:22},{header:"Prénom",width:18},{header:"Plat",width:14},{header:"Type",width:11}];
+  const bt = byTable();
+  Object.keys(bt).map(Number).sort((a,b)=>a-b).forEach(n => bt[n].sort((a,b)=>(a.nom||"").localeCompare(b.nom||"")).forEach((x,i) => ws.addRow([n,i+1,x.nom,cap(x.prenom),x.plat?platName(x.plat):"",typeLabel(x)])));
+  const un = convArr().filter(x=>!x.table); un.forEach((x,i) => ws.addRow(["à placer",i+1,x.nom,cap(x.prenom),x.plat?platName(x.plat):"",typeLabel(x)]));
+  head(ws);
+  // 4. Prestataire
+  ws = wb.addWorksheet("Prestataire");
+  ws.columns = [{header:"Table",width:10},{header:"Personnes",width:11},{header:CFG.platA,width:14},{header:CFG.platB,width:14},{header:CFG.platEnfant,width:14},{header:"État",width:26}];
+  c.rows.forEach(r => ws.addRow([r.n, r.k, r.A, r.B, r.E, r.st.label]));
+  if (c.tot.none || un.length) ws.addRow(["Sans table", un.length, un.filter(x=>x.plat==="A").length, un.filter(x=>x.plat==="B").length, un.filter(x=>x.plat==="E").length, ""]);
+  ws.addRow([]);
+  ws.addRow(["TOTAL inscrits","",c.tot.A,c.tot.B,c.tot.E]).font = {bold:true};
+  ws.addRow(["Supplémentaires","",num(CFG.extraA),num(CFG.extraB),num(CFG.extraE)]);
+  ws.addRow(["COMMANDE","",c.A,c.B,c.E]).font = {bold:true};
+  ws.addRow([]);
+  ws.addRow(["Répartition des tables"]).font = {bold:true};
+  Object.keys(c.sizes).sort((a,b)=>a-b).forEach(k => ws.addRow([`${c.sizes[k]} table(s) de ${k}`]));
+  ws.addRow([]);
+  ws.addRow(["Montant estimé traiteur (€)", c.cout]).font = {bold:true};
+  const notes = convArr().filter(x => x.note);
+  if (notes.length){ ws.addRow([]); ws.addRow(["Allergies / régimes particuliers"]).font = {bold:true}; notes.forEach(x => ws.addRow([x.table?"Table "+x.table:"sans table", fullName(x), x.plat?platName(x.plat):"", x.note])); }
+  head(ws);
+  const buf = await wb.xlsx.writeBuffer();
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([buf], {type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}));
+  a.download = "banquet-lys-cyclo-" + new Date().toISOString().slice(0,10) + ".xlsx";
+  document.body.appendChild(a); a.click(); a.remove();
+  showT("Export Excel généré 📥");
+};
+
+// ═══ IMPRESSION : chevalets (marque-places) et plan par table ═══
+const PR = {mode:"chev", table:"all", logo:""};
+const PCOL = {A:["#FFC000","#000"], B:["#00B050","#fff"], E:["#FF0000","#fff"]}; // mêmes couleurs que ton Excel 2023 : pintade / dorade / steak haché
+const pcol = p => PCOL[p] || ["#c9c9c9","#000"];
+const platUp = c => c.plat ? platName(c.plat).toUpperCase() : "PLAT À CHOISIR";
+const nameSize = s => { const n = (s||"").length; return n > 16 ? "s3" : n > 11 ? "s2" : "s1"; };
+window.openPrint = () => { try { PR.logo = localStorage.getItem("banquet2026_logo") || ""; } catch(e){} renderPrint(); $("ovPrint").classList.add("show"); };
+window.closePrint = () => $("ovPrint").classList.remove("show");
+window.prSet = (k, v) => { PR[k] = v; renderPrint(); };
+window.prLogo = inp => {
+  const f = inp.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = () => { const im = new Image(); im.onload = () => {
+    const s = Math.min(1, 400 / Math.max(im.width, im.height)), cv = document.createElement("canvas");
+    cv.width = Math.round(im.width*s); cv.height = Math.round(im.height*s); cv.getContext("2d").drawImage(im, 0, 0, cv.width, cv.height);
+    PR.logo = cv.toDataURL("image/png"); try { localStorage.setItem("banquet2026_logo", PR.logo); } catch(e){} renderPrint();
+  }; im.src = r.result; };
+  r.readAsDataURL(f);
+};
+window.prNoLogo = () => { PR.logo = ""; try { localStorage.removeItem("banquet2026_logo"); } catch(e){} renderPrint(); };
+function printTables(){
+  const bt = byTable(); let nums = Object.keys(bt).map(Number).sort((a,b)=>a-b);
+  if (PR.table !== "all") nums = nums.filter(n => n === Number(PR.table));
+  return nums.map(n => ({n, list: bt[n].slice().sort((a,b)=>(a.nom||"").localeCompare(b.nom||"") || (a.prenom||"").localeCompare(b.prenom||""))}));
+}
+function chevHTML(c, n, seat){
+  const [bg, fg] = pcol(c.plat);
+  return `<div class="chev"><div class="chev-top"><div class="rot">${PR.logo?`<img src="${PR.logo}" alt="">`:""}<div class="ct">${esc(CFG.titre)}</div><div class="cd">${esc(CFG.date)}</div><div class="ctb">TABLE ${n}</div></div></div>
+  <div class="chev-bot"><div class="tb">TABLE ${n} · PLACE ${seat}</div><div class="cnm"><span class="pn ${nameSize(c.prenom)}">${esc(cap(c.prenom))}</span><span class="nn">${esc((c.nom||"").toUpperCase())}</span></div><div class="band" style="background:${bg};color:${fg}">${esc(platUp(c))}</div></div></div>`;
+}
+function legendHTML(){
+  return `<div class="legend"><span><i style="background:#FFC000"></i>${esc(CFG.platA)}</span><span><i style="background:#00B050"></i>${esc(CFG.platB)}</span><span><i style="background:#FF0000"></i>${esc(CFG.platEnfant)}</span><span style="margin-left:auto">${esc(CFG.titre)} · ${esc(CFG.date)}${CFG.lieu&&CFG.lieu!=="à définir"?" · "+esc(CFG.lieu):""}</span></div>`;
+}
+function recapPage(n, list){
+  const cnt = {A:0,B:0,E:0}; list.forEach(c => { if (cnt[c.plat] !== undefined) cnt[c.plat]++; });
+  const chips = ["A","B","E"].filter(p => cnt[p]).map(p => `<span style="background:${pcol(p)[0]};color:${pcol(p)[1]}">${cnt[p]} × ${esc(platName(p))}</span>`).join("");
+  return `<div class="page"><div class="rh"><div><h1>TABLE ${n}</h1><div class="rs">${list.length} personne${list.length>1?"s":""}</div></div><div class="rcount">${chips}</div></div>` +
+    list.map((c,i) => { const [bg,fg] = pcol(c.plat); return `<div class="seat"><div class="sn">${i+1}</div><div class="sname">${esc(cap(c.prenom))}<b>${esc((c.nom||"").toUpperCase())}</b>${c.note?`<span class="snote">⚠ ${esc(c.note)}</span>`:""}</div><div class="sband" style="background:${bg};color:${fg}">${esc(platUp(c))}</div></div>`; }).join("") + legendHTML() + `</div>`;
+}
+function renderPrint(){
+  const T = printTables(), un = convArr().filter(c => !c.table).length, noPlat = convArr().filter(c => !c.plat).length;
+  const all = Object.keys(byTable()).map(Number).sort((a,b)=>a-b);
+  let pages = "", count = 0;
+  T.forEach(({n, list}) => {
+    if (PR.mode !== "chev"){ pages += recapPage(n, list); count++; }
+    if (PR.mode !== "recap") for (let i = 0; i < list.length; i += 8){ pages += `<div class="page"><div class="cgrid">${list.slice(i, i+8).map((c, j) => chevHTML(c, n, i+j+1)).join("")}</div></div>`; count++; }
+  });
+  $("ovPrint").innerHTML = `<div class="ptool"><button class="bp" onclick="window.print()">🖨️ Imprimer</button>
+    <select onchange="prSet('mode',this.value)"><option value="chev" ${PR.mode==="chev"?"selected":""}>Chevalets (marque-places)</option><option value="recap" ${PR.mode==="recap"?"selected":""}>Plan par table</option><option value="both" ${PR.mode==="both"?"selected":""}>Les deux</option></select>
+    <select onchange="prSet('table',this.value)"><option value="all">Toutes les tables</option>${all.map(n => `<option value="${n}" ${String(PR.table)===String(n)?"selected":""}>Table ${n}</option>`).join("")}</select>
+    <label class="bs" style="cursor:pointer">🖼️ Logo<input type="file" accept="image/*" style="display:none" onchange="prLogo(this)"></label>${PR.logo?`<button class="bs" onclick="prNoLogo()">Retirer le logo</button>`:""}
+    <button class="bs" onclick="closePrint()">✖ Fermer</button>
+    <div class="pinfo">${count} page(s) A4 portrait · chevalets : découpe + pliage au milieu (tente) · imprime en couleur, échelle 100 %.${un?` ⚠️ ${un} personne(s) sans table non imprimée(s).`:""}${noPlat?` ⚠️ ${noPlat} personne(s) sans plat (bandeau gris).`:""}</div></div>
+    <div id="printArea">${pages || `<p style="padding:24px">Aucune table à imprimer : place d'abord les convives.</p>`}</div>`;
+}
+
+// ═══ RENDU GLOBAL ═══
+window.render = render;
+function render(){
+  if (!CU || !ready) return;
+  if (view === "mine") renderMine();
+  else if (view === "plan") renderPlan();
+  else if (view === "admin" && isAdmin()) renderAdmin();
+}
+Object.defineProperty(window, "adminTab", {get:()=>adminTab, set:v=>{adminTab=v;}});
+
+// ═══ TEMPS RÉEL ═══
+let pending = 3;
+const first = () => { if (--pending === 0){ ready = true; $("splash").classList.add("hide"); render(); } };
+const guard = (cb) => { let done = false; return snap => { cb(snap); if (!done){ done = true; first(); } }; };
+onValue(ref(db, "membres"), snap => { MB = Object.entries(snap.val()||{}).map(([id,d])=>({id,...d})); if (ready) render(); }, () => {});
+onValue(ref(db, `${ROOT}/config`), guard(snap => { CFG = {...DEF, ...(snap.val()||{})}; if (ready) render(); }), err => showT("Connexion impossible : " + err.message));
+onValue(ref(db, `${ROOT}/reservations`), guard(snap => { RS = snap.val() || {}; if (ready) render(); }), () => {});
+onValue(ref(db, `${ROOT}/convives`), snap => { CV = snap.val() || {}; if (ready){ if (!document.querySelector("#ovMain.show")) render(); else if (view==="admin"||view==="plan"||view==="mine") { /* sheet ouverte : on ne re-rend pas pour ne pas perdre la saisie */ } } }, () => {});
+onValue(ref(db, `${ROOT}/adherents`), snap => { ADH = snap.val() || {}; if (ready && !document.querySelector("#ovMain.show")) render(); }, () => {});
+// "membres" compte aussi pour le démarrage
+get(ref(db, "membres")).then(s => { MB = Object.entries(s.val()||{}).map(([id,d])=>({id,...d})); }).catch(()=>{}).finally(first);
+// filet de sécurité si Firebase tarde
+setTimeout(() => { if (!ready){ pending = 0; ready = true; $("splash").classList.add("hide"); render(); } }, 4500);
+
+// ═══ DÉMARRAGE ═══
+(function init(){
+  const saved = localStorage.getItem("banquet2026_user_v1");
+  if (saved){ try { CU = JSON.parse(saved); enterApp(); return; } catch(e){} }
+  $("screenLogin").classList.add("show");
+})();
+</script>
+</body>
+</html>
